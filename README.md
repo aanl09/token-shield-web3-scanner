@@ -58,13 +58,24 @@ Main penalties:
 
 ## Scanner flow
 
-1. Select the chain.
-2. Paste the token contract address.
-3. Optionally paste a wallet address to check dusting exposure.
-4. The app reads on-chain contract data through public RPC endpoints.
-5. It pulls security signals from GoPlus.
-6. It pulls market and liquidity data from DexScreener.
-7. The rating engine returns a score, label, positive signals, warnings, and critical risks.
+1. Choose the network the token lives on.
+2. Paste the token contract address. Do not use a symbol, website URL, or pair address.
+3. Add a wallet address only if you want to check whether that wallet is exposed to dusting risk.
+4. The app checks that the contract exists and reads basic ERC-20 data from public RPC endpoints.
+5. It pulls security flags from GoPlus, including honeypot, blacklist, sell restrictions, tax, mint, pause, owner, and proxy signals.
+6. It pulls market data from DexScreener, including liquidity, volume, market cap, and pair activity.
+7. The rating engine starts at 100 and subtracts points for real risk signals. Hard blockers such as no bytecode or honeypot behavior carry the largest penalties.
+8. The final view shows the score, risk label, useful badges, positive signals, warnings, critical issues, and an explorer link.
+
+## How it works
+
+TokenShield is a screening tool, not a trading bot and not a full audit. It combines three views of the same token:
+
+- Contract view: does the token contract exist, and does it expose normal ERC-20 metadata?
+- Security view: does the token show behavior commonly used in scams, such as honeypot logic, blacklist control, blocked selling, mint power, pausable transfers, hidden ownership, or tax changes?
+- Market view: is there enough liquidity and volume for the token to be tradeable, or does it look like a thin, inactive pair?
+
+The score is intentionally strict. A token can have a good market chart and still score poorly if the contract has dangerous permissions. A token can also be technically clean but still get marked down if liquidity is too low. The goal is to catch problems before a wallet approves, swaps, or interacts with the contract.
 
 ## Dusting safety rule
 

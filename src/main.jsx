@@ -200,35 +200,35 @@ function App() {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">
-              <List title="Sinyal bagus" items={result.rating.positives} icon={<CheckCircle2 className="text-emerald-300"/>} color="bg-emerald-300" />
+              <List title="Good signals" items={result.rating.positives} icon={<CheckCircle2 className="text-emerald-300"/>} color="bg-emerald-300" />
               <List title="Warning" items={result.rating.warnings} icon={<AlertTriangle className="text-amber-300"/>} color="bg-amber-300" />
               <List title="Critical" items={result.rating.critical} icon={<XCircle className="text-red-300"/>} color="bg-red-300" />
             </div>
 
             {result.errors?.length > 0 && <div className="card rounded-3xl p-5 text-sm text-slate-300">
-              <b>Catatan API:</b> {result.errors.join(' | ')}
+              <b>API notes:</b> {result.errors.join(' | ')}
             </div>}
           </>}
         </div>
       </div>
 
       <section className="card mt-8 rounded-3xl p-6">
-        <h2 className="text-2xl font-black">Alur kerja scanner</h2>
+        <h2 className="text-2xl font-black">Scanner workflow</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-sm text-slate-300">
-          <div><b className="text-white">1. Input</b><br/>User pilih chain, isi token contract, lalu optional isi wallet untuk dusting check.</div>
-          <div><b className="text-white">2. Fetch data</b><br/>App ambil data on-chain, sinyal keamanan GoPlus, dan market/liquidity DexScreener.</div>
-          <div><b className="text-white">3. Risk engine</b><br/>Sistem kurangi score dari 100 kalau ada honeypot, cannot sell, tax tinggi, owner risk, liquidity kecil, atau dusting risk.</div>
-          <div><b className="text-white">4. Output</b><br/>Hasil keluar sebagai score 0-100, label risiko, badge, warning, critical issue, dan link explorer.</div>
+          <div><b className="text-white">1. Input</b><br/>Choose the network, paste the token contract, and add a wallet only if you want a dusting check.</div>
+          <div><b className="text-white">2. Fetch data</b><br/>The app reads contract data, GoPlus risk flags, and DexScreener liquidity/volume in parallel.</div>
+          <div><b className="text-white">3. Risk engine</b><br/>The score starts at 100. Clear risk signals such as honeypot behavior, blocked selling, high taxes, owner control, thin liquidity, or dusting exposure reduce it.</div>
+          <div><b className="text-white">4. Output</b><br/>The result shows a 0-100 score, a risk label, key badges, warnings, critical issues, and an explorer link.</div>
         </div>
       </section>
 
       <section className="card mt-6 rounded-3xl p-6">
-        <h2 className="text-2xl font-black">Bagaimana aplikasi menilai 1 koin?</h2>
+        <h2 className="text-2xl font-black">How the scanner judges a token</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-sm text-slate-300">
-          <div><b className="text-white">Verified</b><br/>Source code terbuka, metadata valid, bukan honeypot, owner jelas/renounced.</div>
-          <div><b className="text-white">Scam risk</b><br/>Honeypot, blacklist, cannot sell, tax tinggi, owner bisa mint/pause/ubah slippage.</div>
-          <div><b className="text-white">Market risk</b><br/>Liquidity kecil, volume rendah, holder sedikit, LP holder terkonsentrasi.</div>
-          <div><b className="text-white">Dusting risk</b><br/>Wallet punya token asing dengan liquidity rendah atau fungsi berbahaya. Jangan approve atau connect ke situs asal token.</div>
+          <div><b className="text-white">Verified</b><br/>Open source or verified code, valid token metadata, no honeypot signal, and clear or renounced ownership.</div>
+          <div><b className="text-white">Scam risk</b><br/>Honeypot behavior, blacklist logic, blocked selling, high taxes, or owner functions that can mint, pause, or change fees.</div>
+          <div><b className="text-white">Market risk</b><br/>Low liquidity, weak volume, few holders, or concentrated LP ownership.</div>
+          <div><b className="text-white">Dusting risk</b><br/>A wallet holds an unknown low-liquidity token or a token with dangerous permissions. Do not approve it or connect to any site linked from it.</div>
         </div>
       </section>
     </section>
