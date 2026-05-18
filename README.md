@@ -2,6 +2,11 @@
 
 TokenShield is a Web3 token security scanner for EVM networks. It checks whether a token contract looks verified, tradable, liquid, and safe to interact with, then gives the token a risk score from 0 to 100.
 
+## Links
+
+- Live demo: https://aanl09.github.io/token-shield-web3-scanner/
+- GitHub repo: https://github.com/aanl09/token-shield-web3-scanner
+
 ## What it checks
 
 - Contract bytecode exists on the selected chain

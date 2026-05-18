@@ -42,6 +42,20 @@ function RatingBar({ score }) {
   </div>;
 }
 
+
+function FormStep({ step, title, helper, children }) {
+  return <div className="rounded-3xl border border-slate-700/70 bg-slate-950/35 p-4">
+    <div className="mb-3 flex items-start gap-3">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-teal-300 font-black text-slate-950">{step}</div>
+      <div>
+        <label className="block text-sm font-black text-slate-100">{title}</label>
+        <p className="mt-1 text-xs leading-relaxed text-slate-400">{helper}</p>
+      </div>
+    </div>
+    {children}
+  </div>;
+}
+
 function App() {
   const [chainId, setChainId] = useState('1');
   const [token, setToken] = useState('');
@@ -97,6 +111,10 @@ function App() {
           </div>
           <h1 className="text-4xl font-black tracking-tight md:text-6xl">TokenShield</h1>
           <p className="mt-4 max-w-2xl text-slate-300">Aplikasi untuk cek token verified, scam/honeypot, liquidity risk, owner risk, dan indikasi dusting. Rating 0-100 berdasarkan data on-chain, GoPlus, dan DexScreener.</p>
+          <div className="mt-5 flex flex-wrap gap-3 text-sm">
+            <a className="inline-flex items-center gap-2 rounded-2xl border border-teal-300/30 bg-teal-300/10 px-4 py-2 font-bold text-teal-200 hover:border-teal-300/70" href="https://aanl09.github.io/token-shield-web3-scanner/" target="_blank">Live demo <ExternalLink size={14}/></a>
+            <a className="inline-flex items-center gap-2 rounded-2xl border border-slate-600 bg-slate-900/70 px-4 py-2 font-bold text-slate-200 hover:border-slate-400" href="https://github.com/aanl09/token-shield-web3-scanner" target="_blank">GitHub repo <ExternalLink size={14}/></a>
+          </div>
         </div>
         <div className="card rounded-3xl p-4 text-sm text-slate-300">
           <div className="font-bold text-white">Rating cepat</div>
@@ -109,16 +127,26 @@ function App() {
 
       <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <form onSubmit={scan} className="card rounded-3xl p-6">
-          <label className="text-sm font-bold text-slate-200">Chain</label>
-          <select className="input mt-2" value={chainId} onChange={e => setChainId(e.target.value)}>
-            {Object.entries(CHAINS).map(([id, c]) => <option key={id} value={id}>{c.name}</option>)}
-          </select>
+          <div className="mb-5">
+            <h2 className="text-2xl font-black">Form Scan Token</h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-400">Isi dari atas ke bawah. Wallet boleh dikosongkan kalau cuma mau cek contract token.</p>
+          </div>
 
-          <label className="mt-5 block text-sm font-bold text-slate-200">Token contract address</label>
-          <input className="input mt-2" value={token} onChange={e => setToken(e.target.value)} placeholder="0x..." />
+          <div className="space-y-4">
+            <FormStep step="1" title="Pilih chain" helper="Samakan network dengan token contract yang mau dicek.">
+              <select className="input" value={chainId} onChange={e => setChainId(e.target.value)}>
+                {Object.entries(CHAINS).map(([id, c]) => <option key={id} value={id}>{c.name}</option>)}
+              </select>
+            </FormStep>
 
-          <label className="mt-5 block text-sm font-bold text-slate-200">Wallet address optional untuk dusting check</label>
-          <input className="input mt-2" value={wallet} onChange={e => setWallet(e.target.value)} placeholder="0x... wallet yang menerima token mencurigakan" />
+            <FormStep step="2" title="Masukkan token contract" helper="Wajib pakai contract address EVM format 0x, bukan symbol token atau link website.">
+              <input className="input" value={token} onChange={e => setToken(e.target.value)} placeholder="0x... token contract address" autoComplete="off" />
+            </FormStep>
+
+            <FormStep step="3" title="Wallet address untuk dusting check" helper="Opsional. Isi kalau wallet pernah menerima token asing/mencurigakan.">
+              <input className="input" value={wallet} onChange={e => setWallet(e.target.value)} placeholder="0x... wallet address optional" autoComplete="off" />
+            </FormStep>
+          </div>
 
           {error && <div className="mt-4 rounded-2xl border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-200">{error}</div>}
 
@@ -185,6 +213,16 @@ function App() {
       </div>
 
       <section className="card mt-8 rounded-3xl p-6">
+        <h2 className="text-2xl font-black">Alur kerja scanner</h2>
+        <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-sm text-slate-300">
+          <div><b className="text-white">1. Input</b><br/>User pilih chain, isi token contract, lalu optional isi wallet untuk dusting check.</div>
+          <div><b className="text-white">2. Fetch data</b><br/>App ambil data on-chain, sinyal keamanan GoPlus, dan market/liquidity DexScreener.</div>
+          <div><b className="text-white">3. Risk engine</b><br/>Sistem kurangi score dari 100 kalau ada honeypot, cannot sell, tax tinggi, owner risk, liquidity kecil, atau dusting risk.</div>
+          <div><b className="text-white">4. Output</b><br/>Hasil keluar sebagai score 0-100, label risiko, badge, warning, critical issue, dan link explorer.</div>
+        </div>
+      </section>
+
+      <section className="card mt-6 rounded-3xl p-6">
         <h2 className="text-2xl font-black">Bagaimana aplikasi menilai 1 koin?</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-sm text-slate-300">
           <div><b className="text-white">Verified</b><br/>Source code terbuka, metadata valid, bukan honeypot, owner jelas/renounced.</div>
